@@ -259,7 +259,7 @@ static void SetConsoleWindowSettings(HANDLE hStdout)
 
 int main(void)
 {
-    HANDLE hStdout, hStdin;
+    HANDLE hStdout;
     COORD cursor_pos_score;
     Node *snake_head, *snake_head_updated, *list_head;
     Apple *apple;
@@ -275,7 +275,6 @@ int main(void)
     apple = NULL;
 
     hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    hStdin = GetStdHandle(STD_INPUT_HANDLE);
 
     SetConsoleWindowSettings(hStdout);
     cursor_pos_score = GetCursorPosition(hStdout);
