@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <windows.h>
-#include <conio.h>
+#include <time.h>
 
 
-#define ESC 27 // Escape key
+#define KEY_ESC 0x1B
+#define KEY_A 0x41
+#define KEY_S 0x53
+#define KEY_D 0x44
+#define KEY_W 0x57
 
 
 // A linked list (for snake body) 
@@ -187,7 +191,11 @@ static void TeleportIfWallHit(COORD bufferSize, SHORT *x, SHORT *y)
 
 static void GameOver(HANDLE hStdout, COORD bufferSize, int snakeLen)
 {
-    COORD print = {bufferSize.X/2 - 4, bufferSize.Y/3};
+    //COORD print = {bufferSize.X/2 - 4, bufferSize.Y/3};
+    COORD print;
+
+    print.X = bufferSize.X/2 - 4;
+    print.Y = bufferSize.Y/3;
 
     system("cls");
 
@@ -236,7 +244,8 @@ static void WaitForFirstInput()
 
     while (wait_for_first_input)
     {
-        if (_kbhit())
+        if (GetAsyncKeyState(KEY_A) || GetAsyncKeyState(KEY_S) ||
+            GetAsyncKeyState(KEY_D) || GetAsyncKeyState(KEY_W))
         {
             wait_for_first_input = 0;
         }
@@ -266,11 +275,10 @@ int main(void)
     Node *snake_head, *snake_head_updated, *list_head;
     Apple *apple;
     SHORT x, y, x_change, y_change, snake_len;
-    int wait_for_first_input = 1;
     int game_over = 0;
 
 
-    srand ( time(NULL) );
+    srand ((unsigned int)time(NULL));
     x_change = y_change = 0;
     snake_len = 1;
     snake_head = snake_head_updated = list_head = NULL;
@@ -297,32 +305,29 @@ int main(void)
     while (!game_over) 
     {
 
-        if (_kbhit())
+        if(GetAsyncKeyState(KEY_A))
         {
-            switch (_getch())
-            {
-            case 'a':
-                x_change = -1;
-                y_change = 0;
-                break;
-            case 'd':
-                x_change = 1;
-                y_change = 0;
-                break;
-            case 'w':
-                x_change = 0;
-                y_change = -1;
-                break;
-            case 's':
-                x_change = 0;
-                y_change = 1;
-                break;
-            case ESC:
-                game_over = 1;
-                break;
-            default:
-                break;
-            }
+            x_change = -1;
+            y_change = 0;
+        }
+        if(GetAsyncKeyState(KEY_D))
+        {
+            x_change = 1;
+            y_change = 0;
+        }
+        if(GetAsyncKeyState(KEY_W))
+        {
+            x_change = 0;
+            y_change = -1;
+        }
+        if(GetAsyncKeyState(KEY_S))
+        {
+            x_change = 0;
+            y_change = 1;
+        }
+        if(GetAsyncKeyState(KEY_ESC))
+        {
+            game_over = 1;
         }
 
         x += x_change;
